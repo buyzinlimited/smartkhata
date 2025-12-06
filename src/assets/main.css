@@ -1,0 +1,77 @@
+@import "tailwindcss";
+@theme {
+    --color-primary: #c4161c;
+    --color-light: #dcd8f2;
+    --color-white: #fff;
+    --color-success: #0e9a5f;
+    --color-warning: #fdae1c;
+    --color-danger: #ff4040;
+    --color-body: #f7f7f7;
+    --color-dark: #05040e;
+
+    --font-body: Inter, sans-serif;
+
+    --container: 32rem;
+
+
+}
+
+
+.scrollbar::-webkit-scrollbar {
+    background-color: transparent;
+    width: 8px;
+}
+
+.scrollbar:hover::-webkit-scrollbar {
+    width: 8px;
+}
+.scrollbar:hover::-webkit-scrollbar-track {
+    background: linear-gradient(0deg, rgb(220, 200, 246) 0%, rgb(216, 216, 255) 100%);
+}
+
+.scrollbar:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+.form__group {
+    @apply mb-3;
+}
+
+.form__label{
+    @apply block font-semibold text-sm text-gray-900 mb-1;
+}
+
+.form__control{
+    @apply w-full px-2 py-1.5 border border-primary/10 focus:border-primary focus:outline-none focus:ring-0 rounded placeholder:text-sm disabled:bg-gray-100;
+}
+
+table{
+    width: 100%;
+    overflow-x: auto;
+    text-align: left;
+}
+
+thead{
+    text-transform: capitalize;
+}
+
+
+thead th{
+    padding: 6px 10px;
+    white-space: nowrap;
+    text-transform: capitalize;
+}
+
+tbody{
+    color: #1a202c;
+}
+
+tbody tr{
+    border-bottom: 1px dashed #d2d2d2;
+}
+
+tbody td{
+    padding: 6px 10px;
+    white-space: nowrap;
+    text-transform: capitalize;
+}
