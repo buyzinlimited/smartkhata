@@ -1,11 +1,10 @@
-import { defineStore } from 'pinia'
-import axiosInstance from "@/plugins/axios.js";
-import {useToastStore} from "@/stores/toast.js";
+import { defineStore } from "pinia";
+import { useToastStore } from "@/stores/toast.js";
+import apiClient from "@/utils/axios";
 
 const toastStore = useToastStore();
 
-export const useCustomerStore = defineStore('customer', {
-
+export const useCustomerStore = defineStore("customer", {
   state: () => ({
     loading: false,
     modal: false,
@@ -15,34 +14,30 @@ export const useCustomerStore = defineStore('customer', {
     statistics: {},
   }),
 
-  getters: {
-
-  },
+  getters: {},
 
   actions: {
-
-    async all (){
+    async all() {
       try {
-        const response = await axiosInstance.get('/api/customers');
+        const response = await apiClient.get("/api/customers");
         if (response.status === 200) {
           this.customers = response.data;
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
       }
     },
 
-
-    async store (formData){
+    async store(formData) {
       this.loading = true;
       try {
-        const response = await axiosInstance.post('/api/customer/store',formData);
+        const response = await apiClient.post("/api/customer/store", formData);
         if (response.status === 201) {
           toastStore.success(response.data.message);
           this.modal = false;
@@ -50,102 +45,100 @@ export const useCustomerStore = defineStore('customer', {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
-      }finally {
+      } finally {
         this.loading = false;
       }
     },
 
-
-    async show (id){
+    async show(id) {
       this.loading = true;
       try {
-        const response = await axiosInstance.get(`/api/customer/${id}/show`);
+        const response = await apiClient.get(`/api/customer/${id}/show`);
         if (response.status === 200) {
           this.customer = response.data;
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
-      }finally {
+      } finally {
         this.loading = false;
       }
     },
 
-
-    async payment (form){
+    async payment(form) {
       this.loading = true;
       try {
-        const response = await axiosInstance.post(`/api/customer/${form.customer_id}/payment`, {
-          due: form.due,
-          payable: form.payable,
-          remark: form.remark,
-        });
+        const response = await apiClient.post(
+          `/api/customer/${form.customer_id}/payment`,
+          {
+            due: form.due,
+            payable: form.payable,
+            remark: form.remark,
+          }
+        );
         if (response.status === 201) {
           toastStore.success(response.data.message);
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
-      }finally {
+      } finally {
         this.loading = false;
       }
     },
 
-
-    async getReport (id){
+    async getReport(id) {
       try {
-        const response = await axiosInstance.get(`/api/customers/${id}/report`);
+        const response = await apiClient.get(`/api/customers/${id}/report`);
         if (response.status === 200) {
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
       }
     },
 
-
-    async getStatistics (){
+    async getStatistics() {
       try {
-        const response = await axiosInstance.get(`/api/customers/statistics`);
+        const response = await apiClient.get(`/api/customers/statistics`);
         if (response.status === 200) {
           this.statistics = response.data;
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
       }
     },
 
-
-    async getStatements (){
+    async getStatements() {
       this.loading = true;
       try {
-        const response = await axiosInstance.get('/api/customers/statements', {
+        const response = await apiClient.get("/api/customers/statements", {
           responseType: "blob",
         });
 
@@ -167,25 +160,21 @@ export const useCustomerStore = defineStore('customer', {
       }
     },
 
-
-    async delete (id){
+    async delete(id) {
       try {
-        const response = await axiosInstance.delete(`/api/customer/${id}/delete`);
+        const response = await apiClient.delete(`/api/customer/${id}/delete`);
         if (response.status === 200) {
           toastStore.success(response.data.message);
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
       }
     },
-
-
-
   },
-})
+});

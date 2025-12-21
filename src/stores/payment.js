@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import axiosInstance from "@/plugins/axios.js";
 import { useToastStore } from "@/stores/toast.js";
 import { useAccountStore } from "./account";
+import apiClient from "@/utils/axios";
 
 const toastStore = useToastStore();
 const accountStore = useAccountStore();
@@ -22,7 +22,7 @@ export const usePaymentStore = defineStore("payment", {
     async depositStore(form) {
       this.loading = true;
       try {
-        const response = await axiosInstance.post(
+        const response = await apiClient.post(
           `/api/account/${form.account_id}/deposit`,
           form
         );
@@ -48,7 +48,7 @@ export const usePaymentStore = defineStore("payment", {
     async withdrawStore(form) {
       this.loading = true;
       try {
-        const response = await axiosInstance.post(
+        const response = await apiClient.post(
           `/api/account/${form.account_id}/withdraw`,
           form
         );
@@ -74,7 +74,7 @@ export const usePaymentStore = defineStore("payment", {
     async expenseStore(form) {
       this.loading = true;
       try {
-        const response = await axiosInstance.post(
+        const response = await apiClient.post(
           `/api/account/${form.account_id}/expense`,
           form
         );
@@ -100,10 +100,7 @@ export const usePaymentStore = defineStore("payment", {
     async getExchange(form) {
       this.loading = true;
       try {
-        const response = await axiosInstance.post(
-          "/api/account/exchange",
-          form
-        );
+        const response = await apiClient.post("/api/account/exchange", form);
         if (response.status === 201) {
           this.exchange = false;
           toastStore.success(response.data.message);

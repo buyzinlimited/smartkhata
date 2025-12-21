@@ -1,8 +1,8 @@
-import {defineStore} from 'pinia'
-import axiosInstance from "@/plugins/axios.js";
-import {useToastStore} from "@/stores/toast.js";
+import { defineStore } from "pinia";
+import { useToastStore } from "@/stores/toast.js";
+import apiClient from "@/utils/axios";
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore("auth", {
   state: () => ({
     loading: false,
     user: {},
@@ -14,22 +14,21 @@ export const useAuthStore = defineStore('auth', {
   // persist: true,
 
   persist: {
-    paths: ['token', 'user', 'api_key'],
+    paths: ["token", "user", "api_key"],
   },
 
   getters: {
-    loggedIn: state => !!state.token,
+    loggedIn: (state) => !!state.token,
   },
 
   actions: {
-
     async login(formData) {
       this.loading = true;
       const toastStore = useToastStore();
       try {
-        const response = await axiosInstance.post("/api/auth/login", formData);
+        const response = await apiClient.post("/api/auth/login", formData);
         console.log(response.data);
-        if (response.status === 200){
+        if (response.status === 200) {
           this.token = response.data?.token;
           this.user = response.data?.user;
           this.api_key = response.data?.api_key;
@@ -37,24 +36,23 @@ export const useAuthStore = defineStore('auth', {
           setTimeout(() => {
             window.location.replace(import.meta.env.BASE_URL);
           }, 1000);
-          return new Promise((resolve) =>{
-            resolve(response.data)
+          return new Promise((resolve) => {
+            resolve(response.data);
           });
         }
       } catch (error) {
-        if (error.response){
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
-      }finally {
-        this.loading = false
+      } finally {
+        this.loading = false;
       }
     },
 
-
     async getUser() {
       try {
-        const response = await axiosInstance.get('/api/user');
+        const response = await apiClient.get("/api/user");
         if (response.status === 200) {
           this.user = response.data;
           this.selectedCompany = this.companies[0] || null;
@@ -66,10 +64,10 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async logout(){
+    async logout() {
       this.loading = true;
       try {
-        const response = await axiosInstance.post('/api/logout');
+        const response = await apiClient.post("/api/logout");
         if (response.status === 200) {
           const toastStore = useToastStore();
           toastStore.success(response.data.message);
@@ -81,15 +79,15 @@ export const useAuthStore = defineStore('auth', {
             resolve(response);
           });
         }
-      }catch (error){
+      } catch (error) {
         const toastStore = useToastStore();
-        if (error.response){
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
-      }finally {
+      } finally {
         this.loading = false;
       }
     },
   },
-})
+});

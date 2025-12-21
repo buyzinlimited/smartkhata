@@ -1,44 +1,39 @@
-import { defineStore } from 'pinia'
-import axiosInstance from "@/plugins/axios.js";
-import {useToastStore} from "@/stores/toast.js";
+import { defineStore } from "pinia";
+import { useToastStore } from "@/stores/toast.js";
+import apiClient from "@/utils/axios";
 
 const toastStore = useToastStore();
 
-export const useUserStore = defineStore('user', {
-
+export const useUserStore = defineStore("user", {
   state: () => ({
     loading: false,
     errors: {},
   }),
 
-  getters: {
-
-  },
+  getters: {},
 
   actions: {
-
-    async all (){
+    async all() {
       try {
-        const response = await axiosInstance.get('/api/customers');
+        const response = await apiClient.get("/api/customers");
         if (response.status === 200) {
           this.customers = response.data;
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
       }
     },
 
-
-    async store (formData){
+    async store(formData) {
       this.loading = true;
       try {
-        const response = await axiosInstance.post('/api/customers/store',formData);
+        const response = await apiClient.post("/api/customers/store", formData);
         if (response.status === 201) {
           toastStore.success(response.data.message);
           this.modal = false;
@@ -46,102 +41,99 @@ export const useUserStore = defineStore('user', {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
-      }finally {
+      } finally {
         this.loading = false;
       }
     },
 
-
-    async show (id){
+    async show(id) {
       this.loading = true;
       try {
-        const response = await axiosInstance.get(`/api/customer/${id}/show`);
+        const response = await apiClient.get(`/api/customer/${id}/show`);
         if (response.status === 200) {
           this.customer = response.data.data;
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
-      }finally {
+      } finally {
         this.loading = false;
       }
     },
 
-
-    async payment (form){
+    async payment(form) {
       this.loading = true;
       try {
-        const response = await axiosInstance.post(`/api/customers/${form.customer_id}/payment`, {
-          due: form.due,
-          payable: form.payable,
-          note: form.note,
-        });
+        const response = await apiClient.post(
+          `/api/customers/${form.customer_id}/payment`,
+          {
+            due: form.due,
+            payable: form.payable,
+            note: form.note,
+          }
+        );
         if (response.status === 201) {
           toastStore.success(response.data.message);
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
-      }finally {
+      } finally {
         this.loading = false;
       }
     },
 
-
-    async getReport (id){
+    async getReport(id) {
       try {
-        const response = await axiosInstance.get(`/api/customers/${id}/report`);
+        const response = await apiClient.get(`/api/customers/${id}/report`);
         if (response.status === 200) {
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
       }
     },
 
-
-    async getWallet (){
+    async getWallet() {
       try {
-        const response = await axiosInstance.get(`/api/customers/wallet`);
+        const response = await apiClient.get(`/api/customers/wallet`);
         if (response.status === 200) {
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
       }
     },
 
-
-    async getReportPrint (){
+    async getReportPrint() {
       this.loading = true;
       try {
-
-        const response = await axiosInstance.get('/api/pdf/customers', {
+        const response = await apiClient.get("/api/pdf/customers", {
           responseType: "blob",
         });
 
@@ -163,25 +155,21 @@ export const useUserStore = defineStore('user', {
       }
     },
 
-
-    async delete (id){
+    async delete(id) {
       try {
-        const response = await axiosInstance.delete(`/api/customers/${id}/delete`);
+        const response = await apiClient.delete(`/api/customers/${id}/delete`);
         if (response.status === 200) {
           toastStore.success(response.data.message);
           return new Promise((resolve) => {
             resolve(response.data);
           });
         }
-      }catch (error) {
-        if (error.response){
+      } catch (error) {
+        if (error.response) {
           this.errors = error.response.data.errors;
           toastStore.error(error.response.data.message);
         }
       }
     },
-
-
-
   },
-})
+});

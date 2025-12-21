@@ -62,7 +62,7 @@ onMounted(() => {
                 <h2 class="block font-semibold text-green-700">Today Income</h2>
                 <span v-if="statistics" class="block text-green-700">{{
                   currency(statistics.income)
-                  }}</span>
+                }}</span>
                 <span v-else class="block text-green-700">Loading...</span>
               </div>
             </article>
@@ -78,7 +78,7 @@ onMounted(() => {
                 <h2 class="block font-semibold text-red-700">Today Expense</h2>
                 <span v-if="statistics" class="block text-red-700">{{
                   currency(statistics.expense)
-                  }}</span>
+                }}</span>
                 <span v-else class="block text-red-700">Loading...</span>
               </div>
             </article>
@@ -116,11 +116,12 @@ onMounted(() => {
               <tr>
                 <th>Sender</th>
                 <th>Type</th>
+                <th>Number</th>
+                <th>Fee</th>
                 <th>Before</th>
                 <th>Amount</th>
                 <th>After</th>
-                <th>Number</th>
-                <th>Fee</th>
+                <th>Cash</th>
                 <th>Reference</th>
                 <th>remark</th>
               </tr>
@@ -135,11 +136,12 @@ onMounted(() => {
                     <span v-if="item.type === 'exchange'" class="capitalize text-blue-500">{{ item.type }}</span>
                     <span v-if="item.type === 'expense'" class="capitalize text-red-500">{{ item.type }}</span>
                   </td>
+                  <td>{{ item.number ?? 'N/A' }}</td>
+                  <td>{{ item.fee ?? 0 }}</td>
                   <td>{{ currency(item.before_balance) }}</td>
                   <td>{{ currency(item.amount) }}</td>
                   <td>{{ currency(item.after_balance) }}</td>
-                  <td>{{ item.number ?? 'N/A' }}</td>
-                  <td>{{ item.fee ?? 0 }}</td>
+                  <td>{{ currency(item.cash) }}</td>
                   <td>{{ item.reference }}</td>
                   <td>{{ item.remark }}</td>
                 </tr>

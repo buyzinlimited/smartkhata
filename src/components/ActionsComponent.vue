@@ -10,33 +10,21 @@ const paymentStore = usePaymentStore();
 
 <template>
   <div class="mt-4 flex items-center justify-center space-x-4">
-    <button
-      type="button"
-      @click="paymentStore.exchange = true"
-      class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
-    >
-      Exchange
-    </button>
-    <button
-      type="button"
-      @click="paymentStore.deposit = true"
-      class="bg-green-500 text-white px-4 py-2 rounded cursor-pointer"
-    >
+
+    <button type="button" @click="paymentStore.deposit = true"
+      class="bg-green-500 text-white px-4 py-2 rounded cursor-pointer">
       Deposit
     </button>
-    <button
-      type="button"
-      @click="paymentStore.withdraw = true"
-      class="bg-orange-500 text-white px-4 py-2 rounded cursor-pointer"
-    >
+    <button type="button" @click="paymentStore.withdraw = true"
+      class="bg-orange-500 text-white px-4 py-2 rounded cursor-pointer">
       Withdraw
     </button>
-
-    <button
-      type="button"
-      @click="paymentStore.expense = true"
-      class="bg-red-500 text-white px-4 py-2 rounded cursor-pointer"
-    >
+    <button type="button" @click="paymentStore.exchange = true"
+      class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer">
+      Exchange
+    </button>
+    <button type="button" @click="paymentStore.expense = true"
+      class="bg-red-500 text-white px-4 py-2 rounded cursor-pointer">
       Expense
     </button>
   </div>

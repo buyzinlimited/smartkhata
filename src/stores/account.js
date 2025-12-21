@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
-import axiosInstance from "@/plugins/axios.js";
 import { useToastStore } from "@/stores/toast.js";
+import { useAuthStore } from "./auth";
+import apiClient from "@/utils/axios";
 
 const toastStore = useToastStore();
+const authStore = useAuthStore();
 
 export const useAccountStore = defineStore("account", {
   state: () => ({
@@ -21,7 +23,7 @@ export const useAccountStore = defineStore("account", {
   actions: {
     async all() {
       try {
-        const response = await axiosInstance.get(`/api/accounts`);
+        const response = await apiClient.get(`/api/accounts`);
         if (response.status === 200) {
           this.accounts = response.data;
           return new Promise((resolve) => {
@@ -39,7 +41,7 @@ export const useAccountStore = defineStore("account", {
     async store(form) {
       this.loading = true;
       try {
-        const response = await axiosInstance.post("/api/account/store", form);
+        const response = await apiClient.post("/api/account/store", form);
         if (response.status === 201) {
           this.modal = false;
           toastStore.success(response.data.message);
@@ -59,7 +61,7 @@ export const useAccountStore = defineStore("account", {
 
     async getLatestTransactions(date) {
       try {
-        const response = await axiosInstance.get(`/api/transactions/latest`, {
+        const response = await apiClient.get(`/api/transactions/latest`, {
           params: {
             date: date,
           },
@@ -80,7 +82,7 @@ export const useAccountStore = defineStore("account", {
 
     async getTransactions(date, page) {
       try {
-        const response = await axiosInstance.get(`/api/transactions`, {
+        const response = await apiClient.get(`/api/transactions`, {
           params: {
             date: date,
             page: page,
@@ -102,7 +104,7 @@ export const useAccountStore = defineStore("account", {
 
     async getAccountTransactions(form, page) {
       try {
-        const response = await axiosInstance.get(
+        const response = await apiClient.get(
           `/api/account/${form.account_id}/transactions`,
           {
             params: {
@@ -127,41 +129,52 @@ export const useAccountStore = defineStore("account", {
 
     async getStatement(form) {
       try {
-        const response = await axiosInstance.get(
+        const response = await apiClient.get(
           `/api/account/${form.account_id}/statement`,
           {
             params: { date: form.date },
-            responseType: "blob", // Important for handling PDFs
+            responseType: "blob",
           }
         );
 
-        if (response.status === 200) {
-          // Create a Blob from the PDF response
-          const blob = new Blob([response.data], { type: "application/pdf" });
+        // ✅ PDF Blob
+        const blob = new Blob([response.data], {
+          type: "application/pdf",
+        });
 
-          // Create a URL for the blob and trigger download
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `statement_${form.account_id}_${form.date}.pdf`;
-          document.body.appendChild(a);
-          a.click();
+        // ✅ Download
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `account_statement_${form.account_id}.pdf`;
+        document.body.appendChild(link);
+        link.click();
 
-          // Cleanup
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-        }
+        // Cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
       } catch (error) {
-        if (error.response) {
-          this.errors = error.response.data.errors;
-          toastStore.error(error.response.data.message);
+        console.error(error);
+
+        // Backend JSON error handling (Laravel)
+        if (error.response && error.response.data) {
+          try {
+            const text = await error.response.data.text();
+            const json = JSON.parse(text);
+
+            alert(json.message || "Failed to download statement");
+          } catch {
+            alert("Something went wrong while downloading PDF");
+          }
+        } else {
+          alert("Network error. Please try again.");
         }
       }
     },
 
     async getBalance() {
       try {
-        const response = await axiosInstance.get(`/api/balance`);
+        const response = await apiClient.get(`/api/balance`);
         if (response.status === 200) {
           this.balance = response.data;
           return new Promise((resolve) => {
@@ -178,7 +191,7 @@ export const useAccountStore = defineStore("account", {
 
     async getStatistics() {
       try {
-        const response = await axiosInstance.get(`/api/account/statistics`);
+        const response = await apiClient.get(`/api/account/statistics`);
         if (response.status === 200) {
           this.statistics = response.data;
           return new Promise((resolve) => {
@@ -195,7 +208,7 @@ export const useAccountStore = defineStore("account", {
 
     async getTransactionsReport(date) {
       try {
-        const response = await axiosInstance.get(
+        const response = await apiClient.get(
           `/api/account/${form.account_id}/statement`,
           {
             params: { date: date },
