@@ -26,7 +26,10 @@ const getLatestTransactions = async () => {
 
 
 const pdfReport = async () => {
-  await accountStore.getTransactions(selectedDate.value);
+  // const date = selectedDate.value
+  //   ? new Date(selectedDate.value).toISOString().split('T')[0]
+  //   : null;
+  await accountStore.getStatement(selectedDate.value);
 };
 
 onMounted(() => {
@@ -86,6 +89,7 @@ onMounted(() => {
         <CustomersStatistics />
       </div>
     </section>
+
 
     <!-- Transactions list -->
     <section class="py-2">
