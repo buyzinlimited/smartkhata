@@ -83,7 +83,7 @@ export const useAccountStore = defineStore("account", {
     async getTransactions(date) {
       try {
         const response = await apiClient.get(`/api/transactions`, {
-          params: {
+          query: {
             date: date,
           },
         });
