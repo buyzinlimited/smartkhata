@@ -80,12 +80,11 @@ export const useAccountStore = defineStore("account", {
       }
     },
 
-    async getTransactions(date, page) {
+    async getTransactions(date) {
       try {
         const response = await apiClient.get(`/api/transactions`, {
           params: {
             date: date,
-            page: page,
           },
         });
         if (response.status === 200) {
@@ -127,22 +126,17 @@ export const useAccountStore = defineStore("account", {
       }
     },
 
-    async getStatement(form) {
+    async getTransactions(form) {
       try {
-        const response = await apiClient.get(
-          `/api/account/${form.account_id}/statement`,
-          {
-            params: { date: form.date },
-            responseType: "blob",
-          }
-        );
+        const response = await apiClient.get(`/api/transactions/report`, {
+          params: { date: form.date },
+          responseType: "blob",
+        });
 
-        // ✅ PDF Blob
         const blob = new Blob([response.data], {
           type: "application/pdf",
         });
 
-        // ✅ Download
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;

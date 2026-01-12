@@ -24,13 +24,9 @@ const getLatestTransactions = async () => {
   await accountStore.getLatestTransactions(selectedDate.value);
 };
 
-const form = reactive({
-  account_id: '',
-  date: selectedDate.value,
-});
 
 const pdfReport = async () => {
-  await accountStore.getStatement(form);
+  await accountStore.getTransactions(selectedDate.value);
 };
 
 onMounted(() => {
@@ -62,7 +58,7 @@ onMounted(() => {
                 <h2 class="block font-semibold text-green-700">Today Income</h2>
                 <span v-if="statistics" class="block text-green-700">{{
                   currency(statistics.income)
-                }}</span>
+                  }}</span>
                 <span v-else class="block text-green-700">Loading...</span>
               </div>
             </article>
@@ -78,7 +74,7 @@ onMounted(() => {
                 <h2 class="block font-semibold text-red-700">Today Expense</h2>
                 <span v-if="statistics" class="block text-red-700">{{
                   currency(statistics.expense)
-                }}</span>
+                  }}</span>
                 <span v-else class="block text-red-700">Loading...</span>
               </div>
             </article>
@@ -98,10 +94,9 @@ onMounted(() => {
           <h3 class="font-semibold text-lg">Latest Transactions</h3>
 
           <div class="flex items-center gap-2">
-            <select v-model="form.account_id" class="bg-white border border-gray-300 px-4 py-1 appearance-auto">
-              <option value="" disabled>Select Account</option>
-              <option v-for="account in accounts.data" :value="account.id">{{ account.label }}</option>
-            </select>
+            <label class="block">
+              <input type="date" v-model="selectedDate" class="form__control" />
+            </label>
             <button type="button" @click.prevent="pdfReport"
               class="bg-primary text-white px-4 py-1 rounded cursor-pointer">
               Print
